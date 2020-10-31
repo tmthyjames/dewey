@@ -41,7 +41,10 @@ def create_cards(list_details, cards):
         list_name = li.name
         for card in cards:
             if list_name in card['list']:
-                card_detail = li.add_card(name=card['name'], position=card.get('pos'))
+                card_detail = li.add_card(
+                    name=card['name'],
+                    position=card.get('pos')
+                )
                 card_description = card.get('description')
                 if card_description:
                     card_detail.set_description(card_description)
@@ -57,7 +60,9 @@ def reset(list_details):
     evening_done_list.move_all_cards(evening_todo_list)
 
 def get_random_quote():
-    response = get('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en')
+    response = get(
+        'http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en'
+    )
     return '{quoteText} - {quoteAuthor}'.format(**loads(response.text))
 
 
@@ -128,7 +133,10 @@ cards = [
         'section': ['morning', 'evening'],
         'cadence': 1,
         'code': 'brush_teeth',
-        'list': [lists['morning_routine_todo']['name'], lists['evening_routine_todo']['name']],
+        'list': [
+            lists['morning_routine_todo']['name'],
+            lists['evening_routine_todo']['name']
+        ],
         'description': None,
         'pos': 2
     },
@@ -137,7 +145,10 @@ cards = [
         'section': ['morning', 'evening'],
         'cadence': 1,
         'code': 'brush_hair',
-        'list': [lists['morning_routine_todo']['name'], lists['evening_routine_todo']['name']],
+        'list': [
+            lists['morning_routine_todo']['name'],
+            lists['evening_routine_todo']['name']
+        ],
         'description': None,
         'pos': 3
     },
@@ -155,7 +166,10 @@ cards = [
         'section': ['morning', 'evening'],
         'cadence': 1,
         'code': 'walk_dogs',
-        'list': [lists['morning_routine_todo']['name'], lists['evening_routine_todo']['name']],
+        'list': [
+            lists['morning_routine_todo']['name'],
+            lists['evening_routine_todo']['name']
+        ],
         'description': None,
         'pos': 5
     },
@@ -192,4 +206,3 @@ if __name__ == '__main__':
     list_details = create_all_lists(lists, board)
     all_cards = generate_cards(cards, random_card)
     card_details = create_cards(list_details, all_cards)
-    
