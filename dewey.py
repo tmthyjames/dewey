@@ -192,3 +192,4 @@ if __name__ == '__main__':
     list_details = create_all_lists(lists, board)
     all_cards = generate_cards(cards, random_card)
     card_details = create_cards(list_details, all_cards)
+    
