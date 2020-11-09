@@ -3,6 +3,7 @@ from json import loads
 from trello import TrelloClient
 import random
 import os
+from dateutil import parser
 
 api_key = os.getenv('API_KEY')
 api_secret = os.getenv('API_SECRET')
@@ -64,6 +65,60 @@ def get_random_quote():
         'http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en'
     )
     return '{quoteText} - {quoteAuthor}'.format(**loads(response.text))
+
+
+def commit_list_state(board):
+
+    for list_ in board.get_lists([]):
+    #     list_actions = l.fetch_actions(action_filter='all')
+        list_record = List(
+            id  = list_.id,
+            board_id = list_.board.id,
+            closed = list_.closed,
+            name = list_.name,
+            pos = list_.pos,
+            subscribed = list_.subscribed
+        )
+
+        session.add(list_record)
+
+    session.commit()
+
+
+def commit_card_activity_data(board):
+
+    for card in board.visible_cards():
+
+        card_actions = card.fetch_actions(action_filter='all')
+        card_json =  card._json_obj
+
+        card_record = Card(
+            id          = card_json['id'],
+            name        = card_json['name'],
+            pos         = card_json['pos'],
+            description = card_json['desc'],
+            short_url   = card_json['shortUrl'],
+            url         = card_json['url'],
+            closed      = card_json['closed'],
+            create_date = c.created_date
+        )
+
+        session.add(card_record)
+
+        for action in card_actions:
+
+            activity = Activity(
+                id          = action.get('id'),
+                card_id     = action.get('data').get('card').get('id'),
+                list_id     = action.get('data').get('list', {}).get('id'),
+                list_before = action.get('data').get('listBefore', {}).get('id'),
+                list_after  = action.get('data').get('listAfter', {}).get('id'),
+                create_date = parser.parse(action.get('date'))
+            )
+
+            session.add(activity)
+
+    session.commit()
 
 
 lists = {
