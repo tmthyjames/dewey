@@ -5,23 +5,23 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 
 
-Model = declarative_base()
+Base = declarative_base()
 
 
-class User(Model):
+class User(Base):
     __tablename__ = "user"
     id = Column(Text, primary_key=True)
     create_date = Column(DateTime)
 
 
-class Board(Model):
+class Board(Base):
     __tablename__ = "board"
     id = Column(Text, primary_key=True)
     user_id = Column(Text, ForeignKey("user.id"))
     create_date = Column(DateTime)
 
 
-class List(Model):
+class List(Base):
     __tablename__ = "list"
     id = Column(Text, primary_key=True)
     board_id = Column(Text, ForeignKey("board.id"))
@@ -33,11 +33,11 @@ class List(Model):
     create_date = Column(DateTime)
 
 
-class Card(Model):
+class Card(Base):
     __tablename__ = "card"
     id = Column(Text, primary_key=True)
-    card_id = Column(Text, ForeignKey("state.id"))
-    list_id = Column(Text, ForeignKey("list.id"))
+    start_list_id = Column(Text, ForeignKey("list.id"))
+    finish_list_id = Column(Text, ForeignKey("list.id"))
     name = Column(Text)
     pos = Column(Integer)
     description = Column(Text)
@@ -46,7 +46,17 @@ class Card(Model):
     url = Column(Text)
     cadence = Column(Text)
     closed = Column(Boolean)
-    member_id = Column()
+    member_id = Column(Text)
     create_date = Column(DateTime)
     edit_date = Column(DateTime)
     is_due_complete = Column(Boolean)
+
+
+class Activity(Base):
+    __tablename__ = 'activity'
+    id = Column(Text, primary_key=True)
+    card_id = Column(Text, ForeignKey("card.id"))
+    list_id = Column(Text, ForeignKey("list.id"))
+    list_before = Column(Text)
+    list_after = Column(Text)
+    create_date = Column(DateTime)
